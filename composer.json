@@ -16,6 +16,12 @@
 			"email": "robregonm@gmail.com",
 			"homepage": "http://obregon.co",
 			"role": "Author"
+		},
+		{
+			"name": "denisogr",
+			"email": "denis.porplenko@gmail.com",
+			"homepage": "",
+			"role": "Fork Author"
 		}
 	],
 	"require": {
