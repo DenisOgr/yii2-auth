@@ -21,7 +21,22 @@ use yii\db\Expression;
  */
 class User extends BaseUser
 {
-	/**
+    /**
+     * Default roles. Admin role.
+     */
+    const ROLE_ADMIN     = 'admin';
+
+    /**
+     * Default roles. Manager role.
+     */
+    const ROLE_MANAGER   = 'manager';
+
+    /**
+     * Default roles. Developer role.
+     */
+    const ROLE_DEVELOPER = 'developer';
+
+    /**
 	 * @inheritdoc
 	 */
 	public $identityClass = '\auth\models\User';

@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
 use auth\models\User;
 
@@ -27,6 +28,11 @@ use auth\models\User;
 		User::STATUS_SUSPENDED => $model->getStatus(User::STATUS_SUSPENDED),
 		User::STATUS_DELETED => $model->getStatus(User::STATUS_DELETED),
 	]) ?>
+
+    <?php
+    $models = \auth\models\AuthItem::find()->asArray()->all();
+    $data = ArrayHelper::map($models, 'name', 'name');
+    echo $form->field($model, 'roleUser')->dropDownList($data) ?>
 
 	<div class="form-group">
 			<?= Html::submitButton($model->isNewRecord ? Yii::t('auth.user', 'Create') : Yii::t('auth.user', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

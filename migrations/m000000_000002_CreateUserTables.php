@@ -7,7 +7,8 @@ class m000000_000002_CreateUserTables extends \yii\db\Migration
 
 	public function safeUp()
 	{
-		$tableMap = Yii::$app->getModule('auth')->tableMap;
+		$tableMap    = Yii::$app->getModule('auth')->tableMap;
+        $authManager = Yii::$app->get('authManager');
 
 		$this->createTable(
 			 $tableMap['User'],
@@ -116,6 +117,13 @@ class m000000_000002_CreateUserTables extends \yii\db\Migration
 		if (!$adminUser->save()) {
 			throw new \yii\console\Exception('Error when creating admin user.');
 		}
+        //Assign admin user role admin
+        $this->insert($authManager->assignmentTable,
+            [
+                'item_name' => auth\components\User::ROLE_ADMIN,
+                'user_id'   => $adminUser->id,
+            ]);
+
 		echo 'User created successfully.' . PHP_EOL;
 	}
 

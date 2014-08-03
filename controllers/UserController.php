@@ -82,7 +82,7 @@ class UserController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model = new User;
+		$model = new User(['scenario' => 'admin_create_user']);
 
 		if ($model->load($_POST) && $model->save()) {
 			return $this->redirect(['view', 'id' => $model->id]);
@@ -103,6 +103,7 @@ class UserController extends Controller
 	public function actionUpdate($id)
 	{
 		$model = $this->findModel($id);
+        $model->setScenario('admin_update_user');
 
 		if ($model->load($_POST) && $model->save()) {
 			return $this->redirect(['view', 'id' => $model->id]);

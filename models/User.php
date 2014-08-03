@@ -38,6 +38,8 @@ class User extends ActiveRecord implements IdentityInterface
 	 */
 	public $password;
 
+    public $item_name;
+
 	private $_isSuperAdmin = null;
 
 	private $statuses = [
@@ -46,6 +48,8 @@ class User extends ActiveRecord implements IdentityInterface
 		self::STATUS_ACTIVE => 'Active',
 		self::STATUS_SUSPENDED => 'Suspended',
 	];
+
+    protected $_roleUser;
 
 	public function behaviors()
 	{
@@ -180,6 +184,9 @@ class User extends ActiveRecord implements IdentityInterface
 			['username', 'unique', 'message' => Yii::t('auth.user', 'This username has already been taken.')],
 			['username', 'string', 'min' => 2, 'max' => 255],
 
+            ['roleUser', 'required'],
+            ['roleUser', 'in', 'range' => \auth\models\AuthItem::find()->select('name')->asArray()->column()],
+
 			['email', 'filter', 'filter' => 'trim'],
 			['email', 'required'],
 			['email', 'email'],
@@ -194,6 +201,8 @@ class User extends ActiveRecord implements IdentityInterface
 	public function scenarios()
 	{
 		return [
+			'admin_create_user' => ['username', 'email', 'password', 'roleUser', 'status'],
+			'admin_update_user' => ['username', 'email', 'password', 'roleUser', 'status'],
 			'signup' => ['username', 'email', 'password'],
 			'profile' => ['username', 'email', 'password'],
 			'resetPassword' => ['password'],
@@ -220,6 +229,9 @@ class User extends ActiveRecord implements IdentityInterface
 			'create_time' => Yii::t('auth.user', 'Create Time'),
 			'update_time' => Yii::t('auth.user', 'Update Time'),
 			'delete_time' => Yii::t('auth.user', 'Delete Time'),
+            'role' => 'Role',
+            'role.item_name' => 'Role',
+
 		];
 	}
 
@@ -249,7 +261,32 @@ class User extends ActiveRecord implements IdentityInterface
 		return false;
 	}
 
-	public function delete()
+    public function afterSave($insert, $changedAttributes)
+    {
+        if (!empty($this->_roleUser)) {
+
+            if($this->scenario == 'admin_create_user') {
+                $authAssignment = new \auth\models\AuthAssignment();
+            } else {
+                $authAssignment = \auth\models\AuthAssignment::findOne(['user_id' => $this->id]);
+            }
+
+            $authAssignment->item_name = $this->_roleUser;
+            $authAssignment->user_id = $this->id;
+
+            if($this->scenario == 'admin_create_user') {
+                $authAssignment->insert();
+            } else {
+                $authAssignment->update();
+            }
+
+            return true;
+        }
+        return false;
+    }
+
+
+    public function delete()
 	{
 		$db = static::getDb();
 		$transaction = $this->isTransactional(self::OP_DELETE) && $db->getTransaction() === null ? $db->beginTransaction() : null;
@@ -294,4 +331,32 @@ class User extends ActiveRecord implements IdentityInterface
 	{
 		return Yii::$app->user->login($this, $duration);
 	}
+
+    /**
+     * Get role user
+     * @return mixed
+     */
+    public function getRole()
+    {
+        return $this->hasOne(\auth\models\AuthAssignment::className(), ['user_id' => 'id']);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRoleUser()
+    {
+        return $this->_roleUser;
+    }
+
+    /**
+     * @param mixed $roleUser
+     */
+    public function setRoleUser($roleUser)
+    {
+        $this->_roleUser = $roleUser;
+    }
+
+
+
 }

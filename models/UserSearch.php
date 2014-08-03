@@ -32,6 +32,7 @@ class UserSearch extends User
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+        $query->joinWith(['role']);
 
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;

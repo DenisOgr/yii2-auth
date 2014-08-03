@@ -50,7 +50,51 @@ class m000000_000001_CreateRbacTables extends \yii\db\Migration
 		]);
 
 		$this->addForeignKey('AuthAssignment_item_name_fk', $authManager->assignmentTable, 'item_name', $authManager->itemTable, 'name', 'CASCADE', 'CASCADE');
-	}
+
+        //Create default roles
+        //admin
+        $this->insert($authManager->itemTable,
+            [
+                'name' => auth\components\User::ROLE_ADMIN,
+                'type' => 1,
+                'created_at' => time()
+            ]
+        );
+
+        //manager
+        $this->insert($authManager->itemTable,
+            [
+                'name' => auth\components\User::ROLE_MANAGER,
+                'type' => 2,
+                'created_at' => time()
+            ]
+        );
+        //developer
+        $this->insert($authManager->itemTable,
+            [
+                'name' => auth\components\User::ROLE_DEVELOPER,
+                'type' => 1,
+                'created_at' => time()
+            ]
+        );
+
+        //Set childrens
+        $this->insert($authManager->itemChildTable,
+            [
+                'parent'   => auth\components\User::ROLE_ADMIN,
+                'child' => auth\components\User::ROLE_MANAGER,
+            ]
+        );
+
+        $this->insert($authManager->itemChildTable,
+            [
+                'parent'   => auth\components\User::ROLE_ADMIN,
+                'child' => auth\components\User::ROLE_DEVELOPER,
+            ]
+        );
+
+
+    }
 
 	public function safeDown()
 	{

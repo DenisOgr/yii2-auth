@@ -25,7 +25,8 @@ $this->params['breadcrumbs'][] = $this->title;
 		]); ?>
 	</p>
 
-	<?php echo DetailView::widget([
+	<?php
+    echo DetailView::widget([
 		'model' => $model,
 		'attributes' => [
 			//'id',
@@ -42,6 +43,10 @@ $this->params['breadcrumbs'][] = $this->title;
 			'create_time',
 			'update_time',
 			'delete_time',
+            [
+                'attribute' => 'role',
+                'value' => $model->role->item_name
+            ],
 		],
 	]); ?>
 

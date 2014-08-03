@@ -40,7 +40,8 @@ $this->params['breadcrumbs'][] = $this->title;
 					}
 			],
 			'last_visit_time',
-			// 'create_time',
+			'role.item_name',
+
 			// 'update_time',
 			// 'delete_time',
 
