@@ -28,9 +28,7 @@ class UserController extends Controller
 				'rules' => [
 					[
 						'allow' => true,
-						'matchCallback' => function () {
-								return \Yii::$app->user->getIsSuperAdmin();
-							},
+						'roles' => ['admin']
 					],
 				],
 			],
