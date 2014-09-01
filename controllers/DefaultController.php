@@ -64,7 +64,7 @@ class DefaultController extends Controller
 
 		//make the captcha required if the unsuccessful attempts are more of thee
 		if ($this->getLoginAttempts() >= $this->module->attemptsBeforeCaptcha) {
-			$model->scenario = 'withCaptcha';
+			//$model->scenario = 'withCaptcha';
 		}
 
 		if ($model->load($_POST) and $model->login()) {
